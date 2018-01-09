@@ -211,14 +211,14 @@ func signRSA(keys []string, param url.Values, privateKey []byte) (s string, err 
 }
 
 func verifySign(req *http.Request, key []byte) (ok bool, err error) {
-	sign, err := base64.StdEncoding.DecodeString(req.PostForm.Get("sign"))
-	signType := req.PostForm.Get("sign_type")
+	sign, err := base64.StdEncoding.DecodeString(req.Form.Get("sign"))
+	signType := req.Form.Get("sign_type")
 	if err != nil {
 		return false, err
 	}
 
 	var keys = make([]string, 0, 0)
-	for key, value := range req.PostForm {
+	for key, value := range req.Form {
 		if key == "sign" || key == "sign_type" {
 			continue
 		}
@@ -231,7 +231,7 @@ func verifySign(req *http.Request, key []byte) (ok bool, err error) {
 
 	var pList = make([]string, 0, 0)
 	for _, key := range keys {
-		var value = strings.TrimSpace(req.PostForm.Get(key))
+		var value = strings.TrimSpace(req.Form.Get(key))
 		if len(value) > 0 {
 			pList = append(pList, key+"="+value)
 		}
