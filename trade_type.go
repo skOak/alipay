@@ -504,8 +504,8 @@ type AliPayTradeAppPay struct {
 	TotalAmount    string `json:"total_amount"`    // 必须 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]
 	SellerId       string `json:"seller_id"`       // 可选 收款支付宝用户ID。 如果该值为空，则默认为商户签约账号对应的支付宝用户ID
 	ProductCode    string `json:"product_code"`    // 必须 销售产品码，商家和支付宝签约的产品码
+    PassbackParams     string `json:"passback_params"`      // 可选 公用回传参数，如果请求时传递了该参数，则返回给商户时会回传该参数。支付宝会在异步通知时将该参数原样返回。本参数必须进行UrlEncode之后才可以发送给支付宝
 	//GoodsType          string `json:"goods_type"`           // 可选 商品主类型：0—虚拟类商品，1—实物类商品 注：虚拟类商品不支持使用花呗渠道
-	//PassbackParams     string `json:"passback_params"`      // 可选 公用回传参数，如果请求时传递了该参数，则返回给商户时会回传该参数。支付宝会在异步通知时将该参数原样返回。本参数必须进行UrlEncode之后才可以发送给支付宝
 	//PromoParams        string `json:"promo_params"`         // 可选 优惠参数 注：仅与支付宝协商后可用
 	//ExtendParams       string `json:"extend_params"`        // 可选 业务扩展参数，详见下面的“业务扩展参数说明”
 	//EnablePayChannels  string `json:"enable_pay_channels"`  // 可选 	可用渠道，用户只能在指定渠道范围内支付  当有多个渠道时用“,”分隔 注：与disable_pay_channels互斥
