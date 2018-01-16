@@ -84,6 +84,10 @@ func (this *AliPay) URLValues(param AliPayParam) (value url.Values, err error) {
 	return p, nil
 }
 
+type HasOriginBodySet interface {
+	SetOriginBody(body string)
+}
+
 func (this *AliPay) doRequest(method string, param AliPayParam, results interface{}) (err error) {
 	var buf io.Reader
 	if param != nil {
@@ -140,6 +144,9 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 	err = json.Unmarshal(data, results)
 	if err != nil {
 		return err
+	}
+	if t, ok := results.(HasOriginBodySet); ok {
+		t.SetOriginBody(string(data))
 	}
 
 	return err

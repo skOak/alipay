@@ -104,6 +104,11 @@ type AliPayTradeQueryResponse struct {
 		VoucherDetailList   []*VoucherDetail `json:"voucher_detail_list,omitempty"` // 本交易支付时使用的所有优惠券信息
 	} `json:"alipay_trade_query_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradeQueryResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 type FundBill struct {
@@ -168,6 +173,11 @@ type AliPayTradeCloseResponse struct {
 		TradeNo    string `json:"trade_no"`
 	} `json:"alipay_trade_close_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradeCloseResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +229,11 @@ type AliPayTradeRefundResponse struct {
 		RefundDetailItemList []*RefundDetailItem `json:"refund_detail_item_list,omitempty"` // 退款使用的资金渠道
 	} `json:"alipay_trade_refund_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradeRefundResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 func (this *AliPayTradeRefundResponse) IsSuccess() bool {
@@ -275,6 +290,7 @@ type AliPayFastpayTradeRefundQueryResponse struct {
 		TradeNo      string `json:"trade_no"`       // 支付宝交易号
 	} `json:"alipay_trade_fastpay_refund_query_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
 }
 
 func (this *AliPayFastpayTradeRefundQueryResponse) IsSuccess() bool {
@@ -282,6 +298,9 @@ func (this *AliPayFastpayTradeRefundQueryResponse) IsSuccess() bool {
 		return true
 	}
 	return false
+}
+func (this *AliPayFastpayTradeRefundQueryResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -373,6 +392,11 @@ type AliPayTradeCreateResponse struct {
 		OutTradeNo string `json:"out_trade_no"`
 	} `json:"alipay_trade_create_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradeCreateResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 type ExtendParamsItem struct {
@@ -483,6 +507,11 @@ type AliPayTradePayResponse struct {
 		VoucherDetailList   []*VoucherDetail `json:"voucher_detail_list,omitempty"` // 本交易支付时使用的所有优惠券信息
 	} `json:"alipay_trade_pay_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradePayResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 func (this *AliPayTradePayResponse) IsSuccess() bool {
@@ -504,7 +533,7 @@ type AliPayTradeAppPay struct {
 	TotalAmount    string `json:"total_amount"`    // 必须 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]
 	SellerId       string `json:"seller_id"`       // 可选 收款支付宝用户ID。 如果该值为空，则默认为商户签约账号对应的支付宝用户ID
 	ProductCode    string `json:"product_code"`    // 必须 销售产品码，商家和支付宝签约的产品码
-    PassbackParams     string `json:"passback_params"`      // 可选 公用回传参数，如果请求时传递了该参数，则返回给商户时会回传该参数。支付宝会在异步通知时将该参数原样返回。本参数必须进行UrlEncode之后才可以发送给支付宝
+	PassbackParams string `json:"passback_params"` // 可选 公用回传参数，如果请求时传递了该参数，则返回给商户时会回传该参数。支付宝会在异步通知时将该参数原样返回。本参数必须进行UrlEncode之后才可以发送给支付宝
 	//GoodsType          string `json:"goods_type"`           // 可选 商品主类型：0—虚拟类商品，1—实物类商品 注：虚拟类商品不支持使用花呗渠道
 	//PromoParams        string `json:"promo_params"`         // 可选 优惠参数 注：仅与支付宝协商后可用
 	//ExtendParams       string `json:"extend_params"`        // 可选 业务扩展参数，详见下面的“业务扩展参数说明”
@@ -580,6 +609,11 @@ type AliPayTradePreCreateResponse struct {
 		QRCode     string `json:"qr_code"`      // 当前预下单请求生成的二维码码串，可以用二维码生成工具根据该码串值生成对应的二维码
 	} `json:"alipay_trade_precreate_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradePreCreateResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 func (this *AliPayTradePreCreateResponse) IsSuccess() bool {
@@ -630,6 +664,11 @@ type AliPayTradeCancelResponse struct {
 		Action     string `json:"action"`       // 本次撤销触发的交易动作 close：关闭交易，无退款 refund：产生了退款
 	} `json:"alipay_trade_cancel_response"`
 	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayTradeCancelResponse) SetOriginBody(body string) {
+	this.Body = body
 }
 
 func (this *AliPayTradeCancelResponse) IsSuccess() bool {
