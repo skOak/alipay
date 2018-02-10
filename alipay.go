@@ -238,7 +238,9 @@ func verifySign(req *http.Request, key []byte) (ok bool, err error) {
 
 	var pList = make([]string, 0, 0)
 	for _, key := range keys {
-		var value = strings.TrimSpace(req.Form.Get(key))
+		//var value = strings.TrimSpace(req.Form.Get(key))
+		// 不需要去除参数中的空格，只需要判断参数是否空值(空字符串)即可
+		var value = req.Form.Get(key)
 		if len(value) > 0 {
 			pList = append(pList, key+"="+value)
 		}
