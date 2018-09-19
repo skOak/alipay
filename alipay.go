@@ -26,19 +26,24 @@ type AliPay struct {
 	SignType        string
 }
 
-func New(appId, partnerId string, publicKey, privateKey []byte, isProduction bool) (client *AliPay) {
+func New(appId, partnerId string, publicKey, privateKey []byte, isProduction, isMApi bool) (client *AliPay) {
 	client = &AliPay{}
 	client.appId = appId
 	client.partnerId = partnerId
 	client.privateKey = privateKey
 	client.publicKey = publicKey
 	client.client = http.DefaultClient
-	if isProduction {
-		client.apiDomain = K_ALI_PAY_PRODUCTION_API_URL
+	if isMApi {
+		client.apiDomain = K_MAPI_PRODUCTION_API_URL
+		client.SignType = K_SIGN_TYPE_RSA
 	} else {
-		client.apiDomain = K_ALI_PAY_SANDBOX_API_URL
+		if isProduction {
+			client.apiDomain = K_ALI_PAY_PRODUCTION_API_URL
+		} else {
+			client.apiDomain = K_ALI_PAY_SANDBOX_API_URL
+		}
+		client.SignType = K_SIGN_TYPE_RSA2
 	}
-	client.SignType = K_SIGN_TYPE_RSA2
 	return client
 }
 

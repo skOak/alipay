@@ -1,16 +1,16 @@
 package alipay
 
 import (
-	"os"
+	"fmt"
 	"testing"
 )
 
 var (
-	appID     = "2016073100129537"
-	partnerID = "2088102169227503"
+	this_appID     = "2016073100129537"
+	this_partnerID = "2088102169227503"
 
 	// RSA2(SHA256)
-	aliPublicKey = []byte(`-----BEGIN PUBLIC KEY-----
+	this_aliPublicKey = []byte(`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2MhEVUp+rRRyAD9HZfiS
 g8LLxRAX18XOMJE8/MNnlSSTWCCoHnM+FIU+AfB+8FE+gGIJYXJlpTIyWn4VUMte
 wh/4C8uwzBWod/3ilw9Uy7lFblXDBd8En8a59AxC6c9YL1nWD7/sh1szqej31VRI
@@ -20,7 +20,7 @@ PRrAtOJCwNsBwbvMuI/ictvxxjUl4nBZDw4lXt5eWWqBrnTSzogFNOk06aNmEBTU
 hwIDAQAB
 -----END PUBLIC KEY-----`)
 
-	publicKey = []byte(`-----BEGIN PUBLIC KEY-----
+	this_publicKey = []byte(`-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv8dXxi8wNAOqBNOh8Dv5
 rh0BTb5KNgk62jDaS536Z1cDqq2JmpBYkBnzJXHAXEgBwPXgX8bGruMMjZKW8P4u
 v3Rvj8Am9ewWwUK2U7m2ZB3Oo9MWtyYoiLGX1IA4FFenXzpPgm0WyzaeLX4yJ8j+
@@ -30,7 +30,7 @@ uRFnKlZuFoEKPWyMGYtbvK9AWIfC8ubn30O5F9kfLMIHwAHCh0UipPSbKDwQ2BnW
 swIDAQAB
 -----END PUBLIC KEY-----`)
 
-	privateKey = []byte(`-----BEGIN RSA PRIVATE KEY-----
+	this_privateKey = []byte(`-----BEGIN RSA PRIVATE KEY-----
 MIIEowIBAAKCAQEAv8dXxi8wNAOqBNOh8Dv5rh0BTb5KNgk62jDaS536Z1cDqq2J
 mpBYkBnzJXHAXEgBwPXgX8bGruMMjZKW8P4uv3Rvj8Am9ewWwUK2U7m2ZB3Oo9MW
 tyYoiLGX1IA4FFenXzpPgm0WyzaeLX4yJ8j+hVrRbgwbZzb9Aq0MyepnK5PVoSPL
@@ -58,48 +58,22 @@ Uzd+FwKBgHW9Nur4eTxK1nIOZyGgCqL1duYsJQcPWyIcRMTSjOoQZ5ZUhQZTw1Hd
 vTlWbWwZHVDP85dioLE9mfo5+Hh3SmHDi3TaVXjxeJsUgHkRgOX7
 -----END RSA PRIVATE KEY-----
 `)
-
-	// RSA(SHA1)
-//	aliPublicKey = []byte(`-----BEGIN PUBLIC KEY-----
-//MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIgHnOn7LLILlKETd6BFRJ0Gqg
-//S2Y3mn1wMQmyh9zEyWlz5p1zrahRahbXAfCfSqshSNfqOmAQzSHRVjCqjsAw1jyq
-//rXaPdKBmr90DIpIxmIyKXv4GGAkPyJ/6FTFY99uhpiq0qadD/uSzQsefWo0aTvP/
-//65zi3eof7TcZ32oWpwIDAQAB
-//-----END PUBLIC KEY-----
-//`)
-//
-//	publicKey = []byte(`-----BEGIN PUBLIC KEY-----
-//MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC/27vaZOkiSI+7/I0PQXHLWV+l
-//uPhXd2sJIT3YnjUSDbW1Lo6HES0yDP/LOAdVHfzxU09+BnKJbSHAsmBuf/ZQej5y
-//lYi7KUNekTf9zRiaT5mrt2T6GNUptbF/o5Ew4dIAdqvbe1+KQZhzkgoJ1o6uNqFH
-//jVkE05TcQ7NQYr42JwIDAQAB
-//-----END PUBLIC KEY-----`)
-//
-//
-//	privateKey = []byte(`-----BEGIN RSA PRIVATE KEY-----
-//MIICXAIBAAKBgQC/27vaZOkiSI+7/I0PQXHLWV+luPhXd2sJIT3YnjUSDbW1Lo6H
-//ES0yDP/LOAdVHfzxU09+BnKJbSHAsmBuf/ZQej5ylYi7KUNekTf9zRiaT5mrt2T6
-//GNUptbF/o5Ew4dIAdqvbe1+KQZhzkgoJ1o6uNqFHjVkE05TcQ7NQYr42JwIDAQAB
-//AoGAAgpbOBpkpFmzNaOc+HGQvUHpE4EhGwUJHWK+HqSoGdYNfazOFT+ohGTA/69L
-//3Krh+ssRCF0XMMD5X+xFvEceHn47yr3TNJeArsT61UGORm4z0bWPwurjQx884t56
-//dXY2X4NnEHPJA1AlphWASZu4h8TkBzsMhfmfJQDURBuWn7ECQQD+x13z+baTCShv
-//BMKrB+fVZa/yfVx3Mk2m5COn3EosF/+SUxPUONav8b7MqNaR20pSJBxmqpybKP5I
-//BbtO7FOpAkEAwMcomveKwRlsP7qse30NY7TvJDoUZPezGutwDNlI5YjjOVh3RaYd
-//SgtCHzqYRQRhiL3ESDHjNXBpj/ayJYxdTwJAIr859w41cjQriYiSrBS174qgxmeG
-//dtMrd/lhS4FltEHJn0EpUSY3UWOc6/iS2u2XY0B9hxr5pMegdl4hv4/HkQJANCxy
-//j+ZZFkPUKTdTgSRqIEcSxeI2LNFhFvMLY17XPNAcdyO7PA1mNejwH1WTanJyFzkM
-//y2E9FfRzjXP96O2hPwJBAJKUyGfGQXVPqbCoYWaX/Bqj7ok8dal74OCRbKp9WrBe
-//FOEq/sfp2vYGaCw9uyczDwRKcliKibgAEPmbZ1ToKt0=
-//-----END RSA PRIVATE KEY-----
-//`)
 )
 
 var client *AliPay
 
-func TestMain(m *testing.M) {
-	client = New(appID, partnerID, publicKey, privateKey, false, false)
-	client.AliPayPublicKey = aliPublicKey
+func TestAliPay_CustomsDeclare(t *testing.T) {
+	client = New(this_appID, this_partnerID, this_publicKey, this_privateKey, false, true)
+	client.AliPayPublicKey = this_aliPublicKey
 
-	exitCode := m.Run()
-	os.Exit(exitCode)
+	fmt.Println("========== CustomsDeclare ==========")
+	var p = DeclareRequest{}
+	p.OutRequestNo = ""
+	p.TradeNo = ""
+	p.MerchantCustomsCode = ""
+	p.MerchantCustomsName = ""
+	p.Amount = ""
+	p.CustomsPlace = ""
+
+	fmt.Println(client.CustomsDeclare(p))
 }
