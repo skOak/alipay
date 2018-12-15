@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -138,7 +139,7 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 		} else if errorIndex > 0 {
 			content, sign = parserJSONSource(dataStr, k_ERROR_RESPONSE, errorIndex)
 		} else {
-			return nil
+			return errors.New("empty response data")
 		}
 
 		if ok, err := verifyResponseData([]byte(content), this.SignType, sign, this.AliPayPublicKey); ok == false {
