@@ -540,6 +540,37 @@ type AliPayTradeAppPay struct {
 	//EnablePayChannels  string `json:"enable_pay_channels"`  // 可选 	可用渠道，用户只能在指定渠道范围内支付  当有多个渠道时用“,”分隔 注：与disable_pay_channels互斥
 	//DisablePayChannels string `json:"disable_pay_channels"` // 可选 禁用渠道，用户不可用指定渠道支付  当有多个渠道时用“,”分隔 注：与enable_pay_channels互斥
 	//StoreId            string `json:"store_id"`             // 可选 商户门店编号
+
+	//支付并签约特有参数。
+	AgreementSignParams *AgreementSignParams `json:"agreement_sign_params"` // 签约相关 如果希望在sdk中支付并签约，需要在这里传入签约信息。支付并签约额外添加 agreement_sign_params
+
+}
+
+type AccessParams struct {
+	Channel string `json:"channel"` // 目前支持以下值： 1. ALIPAYAPP （钱包h5页面签约） 2. QRCODE(扫码签约) 3. QRCODEORSMS(扫码签约或者短信签约) 必传
+}
+
+type PeriodRuleParams struct {
+	PeriodType   string `json:"period_type"`   // 周期类型period_type是周期扣款产品必填，枚举值为DAY和MONTH。DAY即扣款周期按天计，MONTH代表扣款周期按自然月。
+	Period       string `json:"period"`        // 周期数period是周期扣款产品必填。与另一参数period_type组合使用确定扣款周期，例如period_type为DAY，period=90，则扣款周期为90天。
+	ExecuteTime  string `json:"execute_time"`  // 首次执行时间execute_time是周期扣款产品必填，即商户发起首次扣款的时间。精确到日，格式为yyyy-MM-dd
+	SingleAmount string `json:"single_amount"` // 单次扣款最大金额single_amount是周期扣款产品必填，即每次发起扣款时限制的最大金额，单位为元。商户每次发起扣款都不允许大于此金额。
+}
+
+type SignMerchantParams struct {
+	SubMerchantId                 string `json:"sub_merchant_id"`                  // 子商户的商户id
+	SubMerchantName               string `json:"sub_merchant_name"`                // 子商户的商户名称
+	SubMerchantServiceName        string `json:"sub_merchant_service_name"`        //子商户的服务名称
+	SubMerchantServiceDescription string `json:"sub_merchant_service_description"` // 子商户的服务描述
+}
+
+type AgreementSignParams struct {
+	PersonalProductCode string            `json:"personal_product_code"` // 个人签约产品码，商户和支付宝签约时确定。 必传
+	SignScene           string            `json:"sign_scene"`            // 协议签约场景，商户和支付宝签约时确定，商户可咨询技术支持。 必传
+	ExternalAgreementNo string            `json:"external_agreement_no"` // 萌推系统内部的 contract_id
+	AccessParams        *AccessParams     `json:"access_params"`         // 请按当前接入的方式进行填充，且输入值必须为文档中的参数取值范围。 必传
+	PeriodRuleParams    *PeriodRuleParams `json:"period_rule_params"`    // 周期管控规则参数period_rule_params，在签约周期扣款产品（如CYCLE_PAY_AUTH_P）时必传，在签约其他产品时无需传入。 周期扣款产品，会按照这里传入的参数提示用户，并对发起扣款的时间、金额、次数等做相应限制。
+	SubMerchant         *SignMerchantParams `json:"sub_merchant"`          // 此参数用于传递子商户信息，无特殊需求时不用关注。目前商户代扣、海外代扣、淘旅行信用住产品支持传入该参数（在销售方案中“是否允许自定义子商户信息”需要选是）
 }
 
 func (this AliPayTradeAppPay) APIName() string {

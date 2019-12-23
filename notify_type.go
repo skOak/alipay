@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+/*
+	支付：notify_type=trade_status_sync&trade_status=TRADE_SUCCESS
+	签约：notify_type=dut_user_sign&status=NORMAL
+	解约：notify_type=dut_user_unsign&status=UNSIGN
+	支付和签约可以通过这些条件进行判断，notify_type不同，并且有另一个字段来标记 支付的状态 和 签约的状态
+*/
+
 // https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.8AmJwg&treeId=203&articleId=105286&docType=1
 type TradeNotification struct {
 	AuthAppId         string `json:"auth_app_id"`         // App Id
@@ -89,6 +96,72 @@ func GetTradeNotification(req *http.Request, aliPayPublicKey []byte) (noti *Trad
 		return nil, errors.New("不是有效的 Notify")
 	}
 
+	ok, err := verifySign(req, aliPayPublicKey)
+	if ok {
+		return noti, nil
+	}
+	return nil, err
+}
+
+// https://docs.open.alipay.com/api_2/alipay.user.agreement.page.sign
+type AgreementSignNotification struct {
+	NotifyType          string `json:"notify_type"`           // 通知类型
+	NotifyId            string `json:"notify_id"`             // 通知校验ID
+	NotifyTime          string `json:"notify_time"`           // 通知时间
+	SignType            string `json:"sign_type"`             // 签名类型
+	Sign                string `json:"sign"`                  // 签名
+	AppId               string `json:"app_id"`                // 开发者的app_id
+	AuthAppId           string `json:"auth_app_id"`           // App Id
+	SignTime            string `json:"sign_time"`             // 签约时间
+	ExternalLogonId     string `json:"external_logon_id"`     // 用户在商户网站的登录账号，如果商户接口中未传，则不会返回
+	ExternalAgreementNo string `json:"external_agreement_no"` // 萌推系统内部的 contract_code
+	PersonalProductCode string `json:"personal_product_code"` // 个人签约产品码，商户和支付宝签约时确定。 必传
+	SignScene           string `json:"sign_scene"`            // 协议签约场景
+	AlipayUserId        string `json:"alipay_user_id"`        // 支付宝用户唯一id
+	AlipayLogonId       string `json:"alipay_logon_id"`       // 用户的支付宝登录账号，支持邮箱或手机号码格式。本参数与alipay_user_id 不可同时为空，若都填写，则以alipay_user_id 为准
+	Status              string `json:"status"`                // 协议的当前状态。 1. TEMP：暂存，协议未生效过； 2. NORMAL：正常； 3. STOP：暂停。 4. UNSIGN：解约。（只有签约成功才会返回）
+	ValidTime           string `json:"valid_time"`            // 用户代扣协议的实际生效时间，格式为yyyy-MM-dd HH:mm:ss。（只有签约成功才会返回）
+	InvalidTime         string `json:"invalid_time"`          // 用户代扣协议的失效时间，格式为yyyy-MM-dd HH:mm:ss。（只有签约成功才会返回）
+	AgreementNo         string `json:"agreement_no"`          // 支付宝系统中用以唯一标识用户签约记录的编号。（只有签约成功时才会返回）
+	ZmOpenId            string `json:"zm_open_id"`            // 用户的芝麻信用openId，供商户查询用户芝麻信用使用。（只有签约成功时才返回）
+	ForexEligible       string `json:"forex_eligible"`        // 是否海外购汇身份。值：T/F（只有在签约成功时才会返回）
+	UnsignTime          string `json:"unsign_time"`           // 解约时间
+}
+
+func (this *AliPay) GetAgreementSignNotification(req *http.Request) (*AgreementSignNotification, error) {
+	return GetAgreementSignNotification(req, this.AliPayPublicKey)
+}
+
+func GetAgreementSignNotification(req *http.Request, aliPayPublicKey []byte) (noti *AgreementSignNotification, err error) {
+	if req == nil {
+		return nil, errors.New("request 参数不能为空")
+	}
+	req.ParseForm()
+
+	noti = &AgreementSignNotification{}
+	noti.NotifyType = req.FormValue("notify_type")
+	noti.NotifyId = req.FormValue("notify_id")
+	noti.NotifyTime = req.FormValue("notify_time")
+	noti.SignType = req.FormValue("sign_type")
+	noti.Sign = req.FormValue("sign")
+	noti.AppId = req.FormValue("app_id")
+	noti.AuthAppId = req.FormValue("auth_app_id")
+	noti.SignTime = req.FormValue("total_amount")
+	noti.ExternalLogonId = req.FormValue("sign_time")
+	noti.ExternalAgreementNo = req.FormValue("external_agreement_no")
+	noti.PersonalProductCode = req.FormValue("personal_product_code")
+	noti.SignScene = req.FormValue("sign_scene")
+	noti.AlipayUserId = req.FormValue("alipay_user_id")
+	noti.AlipayLogonId = req.FormValue("alipay_logon_id")
+	noti.Status = req.FormValue("status")
+	noti.ValidTime = req.FormValue("valid_time")
+	noti.InvalidTime = req.FormValue("invalid_time")
+	noti.AgreementNo = req.FormValue("agreement_no")
+	noti.ZmOpenId = req.FormValue("zm_open_id")
+	noti.ForexEligible = req.FormValue("forex_eligible")
+	if len(noti.NotifyId) == 0 {
+		return nil, errors.New("不是有效的 SignNotify")
+	}
 	ok, err := verifySign(req, aliPayPublicKey)
 	if ok {
 		return noti, nil
