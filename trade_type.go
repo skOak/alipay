@@ -440,8 +440,12 @@ type GoodsDetailItem struct {
 	ShowUrl       string `json:"show_url"`
 }
 
+type AgreementParams struct {
+	AgreementNo string `json:"agreement_no"`
+}
+
 //////////////////////////////////////////////////////////////////////////////////
-// https://doc.open.alipay.com/docs/api.htm?spm=a219a.7395905.0.0.IGVsS6&docType=4&apiId=850
+// https://docs.open.alipay.com/api_1/alipay.trade.pay
 type AliPayTradePay struct {
 	AppAuthToken string `json:"-"` // 可选
 	NotifyURL    string `json:"-"` // 可选
@@ -450,6 +454,8 @@ type AliPayTradePay struct {
 	Scene                string             `json:"scene"`                  // 必须 支付场景 条码支付，取值：bar_code 声波支付，取值：wave_code	bar_code,wave_code
 	AuthCode             string             `json:"auth_code"`              // 必须 支付授权码
 	Subject              string             `json:"subject"`                // 必须 订单标题
+	AgreementParams      *AgreementParams   `json:"agreement_params"`       // 周期扣款时必填参数
+	ProductCode 		 string 			`json:"product_code"` 			// 可选 销售产品码，与支付宝签约的产品码名称。 注：目前仅支持FAST_INSTANT_TRADE_PAY
 	BuyerId              string             `json:"buyer_id"`               // 可选 家的支付宝用户id，如果为空，会从传入了码值信息中获取买家ID
 	SellerId             string             `json:"seller_id"`              // 可选 如果该值为空，则默认为商户签约账号对应的支付宝用户ID
 	TotalAmount          string             `json:"total_amount"`           // 可选 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]。 如果同时传入【可打折金额】和【不可打折金额】，该参数可以不用传入； 如果同时传入了【可打折金额】，【不可打折金额】，【订单总金额】三者，则必须满足如下条件：【订单总金额】=【可打折金额】+【不可打折金额】
@@ -515,7 +521,7 @@ func (this *AliPayTradePayResponse) SetOriginBody(body string) {
 }
 
 func (this *AliPayTradePayResponse) IsSuccess() bool {
-	if this.AliPayTradePay.Code == K_SUCCESS_CODE {
+	if this.AliPayTradePay.Code == K_SUCCESS_CODE || this.AliPayTradePay.Code == K_SUCESS_PAY_INPROCESS_CODE {
 		return true
 	}
 	return false

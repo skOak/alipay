@@ -18,6 +18,7 @@ const (
 
 	// https://doc.open.alipay.com/docs/doc.htm?treeId=291&articleId=105806&docType=1
 	K_SUCCESS_CODE = "10000"
+	K_SUCESS_PAY_INPROCESS_CODE = "10003"
 )
 
 const (
