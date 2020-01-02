@@ -32,6 +32,8 @@ type AliPayAgreementQueryResponse struct {
 	AlipayUserAgreementQueryResponse struct {
 		Code                string `json:"code"`
 		Msg                 string `json:"msg"`
+		SubCode				string `json:"sub_code"`         	  // 业务错误码
+		SubMsg				string `json:"sub_msg"`				  // 业务错误报错信息
 		ValidTime           string `json:"valid_time"`            // 协议生效时间，格式为 yyyy-MM-dd HH:mm:ss
 		AlipayLogonId       string `json:"alipay_logon_id"`       // 返回脱敏的支付宝账号
 		InvalidTime         string `json:"invalid_time"`          // 协议失效时间，格式为 yyyy-MM-dd HH:mm:ss
