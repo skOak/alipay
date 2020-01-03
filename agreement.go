@@ -15,3 +15,11 @@ func (this *AliPay) AliPayAgreementUnsign(param AliPayAgreementUnsign) (results 
 	err = this.doRequest("POST", param, results)
 	return results, err
 }
+
+// AgreementModify https://docs.open.alipay.com/api_2/alipay.user.agreement.executionplan.modify
+// 修改协议接口alipay.user.agreement.executionplan.modify
+func (this *AliPay) AliPayAgreementModify(param AliPayAgreementModify) (results *AliPayAgreementModifyResponse, err error) {
+	results = &AliPayAgreementModifyResponse{}
+	err = this.doRequest("POST", param, results)
+	return results, err
+}
