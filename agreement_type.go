@@ -76,7 +76,7 @@ type AliPayAgreementUnsign struct {
 	AlipayUserId        string `json:"alipay_user_id"`        // 用户的支付宝账号对应 的支付宝唯一用户号，以 2088 开头的 16 位纯数字 组成
 	AlipayLogonId       string `json:"alipay_logon_id"`       // 用户的支付宝登录账号，支持邮箱或手机号码格式。本参数与alipay_user_id 不可同时为空，若都填写，则以alipay_user_id 为准
 	ExternalAgreementNo string `json:"external_agreement_no"` // 萌推系统内部的 contract_code
-
+	AgreementNo         string `json:"agreement_no"`          // 支付宝系统中用以唯一标识用户签约记录的编号（用户签约成功后的协议号），如果传了该参数，其他参数会被忽略
 }
 
 func (this AliPayAgreementUnsign) APIName() string {
@@ -99,8 +99,10 @@ func (this AliPayAgreementUnsign) ExtJSONParamValue() string {
 
 type AliPayAgreementUnsignResponse struct {
 	AlipayUserAgreementUnsignResponse struct {
-		Code string `json:"code"`
-		Msg  string `json:"msg"`
+		Code    string `json:"code"`
+		Msg     string `json:"msg"`
+		SubCode string `json:"sub_code"`
+		SubMsg  string `json:"sub_msg"`
 	} `json:"alipay_user_agreement_unsign_response"`
 	Sign string `json:"sign"`
 	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
@@ -113,5 +115,54 @@ func (this *AliPayAgreementUnsignResponse) IsSuccess() bool {
 	return false
 }
 func (this *AliPayAgreementUnsignResponse) SetOriginBody(body string) {
+	this.Body = body
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// https://docs.open.alipay.com/api_2/alipay.user.agreement.executionplan.modify
+// 支付宝个人代扣协议修改接口
+type AliPayAgreementModify struct {
+	AgreementNo string `json:"agreement_no"` // 支付宝系统中用以唯一标识用户签约记录的编号（用户签约成功后的协议号），如果传了该参数，其他参数会被忽略
+	DeductTime  string `json:"deduct_time"`  // 商户下一次扣款时间
+	Memo        string `json:"memo"`         // 具体修改原因
+}
+
+func (this AliPayAgreementModify) APIName() string {
+	return "alipay.user.agreement.executionplan.modify"
+}
+
+func (this AliPayAgreementModify) Params() map[string]string {
+	var m = make(map[string]string)
+	return m
+}
+
+func (this AliPayAgreementModify) ExtJSONParamName() string {
+	return "biz_content"
+}
+
+func (this AliPayAgreementModify) ExtJSONParamValue() string {
+	return marshal(this)
+}
+
+type AliPayAgreementModifyResponse struct {
+	AlipayUserAgreementExecutionplanModifyResponse struct {
+		Code    	string `json:"code"`
+		Msg    	 	string `json:"msg"`
+		SubCode 	string `json:"sub_code"`
+		SubMsg  	string `json:"sub_msg"`
+		AgreementNo string `json:"agreement_no"`
+		DeductTime 	string `json:"deduct_time"`
+	} `json:"alipay_user_agreement_executionplan_modify_response"`
+	Sign string `json:"sign"`
+	Body string `json:"-"` // 返回内容原文，主要是为了记录日志
+}
+
+func (this *AliPayAgreementModifyResponse) IsSuccess() bool {
+	if this.AlipayUserAgreementExecutionplanModifyResponse.Code == K_SUCCESS_CODE {
+		return true
+	}
+	return false
+}
+func (this *AliPayAgreementModifyResponse) SetOriginBody(body string) {
 	this.Body = body
 }
