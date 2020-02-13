@@ -455,7 +455,7 @@ type AliPayTradePay struct {
 	AuthCode             string             `json:"auth_code"`              // 必须 支付授权码
 	Subject              string             `json:"subject"`                // 必须 订单标题
 	AgreementParams      *AgreementParams   `json:"agreement_params"`       // 周期扣款时必填参数
-	ProductCode 		 string 			`json:"product_code"` 			// 可选 销售产品码，与支付宝签约的产品码名称。 注：目前仅支持FAST_INSTANT_TRADE_PAY
+	ProductCode          string             `json:"product_code"`           // 可选 销售产品码，与支付宝签约的产品码名称。 注：目前仅支持FAST_INSTANT_TRADE_PAY
 	BuyerId              string             `json:"buyer_id"`               // 可选 家的支付宝用户id，如果为空，会从传入了码值信息中获取买家ID
 	SellerId             string             `json:"seller_id"`              // 可选 如果该值为空，则默认为商户签约账号对应的支付宝用户ID
 	TotalAmount          string             `json:"total_amount"`           // 可选 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]。 如果同时传入【可打折金额】和【不可打折金额】，该参数可以不用传入； 如果同时传入了【可打折金额】，【不可打折金额】，【订单总金额】三者，则必须满足如下条件：【订单总金额】=【可打折金额】+【不可打折金额】
@@ -546,6 +546,7 @@ type AliPayTradeAppPay struct {
 	//EnablePayChannels  string `json:"enable_pay_channels"`  // 可选 	可用渠道，用户只能在指定渠道范围内支付  当有多个渠道时用“,”分隔 注：与disable_pay_channels互斥
 	//DisablePayChannels string `json:"disable_pay_channels"` // 可选 禁用渠道，用户不可用指定渠道支付  当有多个渠道时用“,”分隔 注：与enable_pay_channels互斥
 	//StoreId            string `json:"store_id"`             // 可选 商户门店编号
+	SpecifiedChannel string `json:"specified_channel"` // 指定渠道，目前仅支持传入pcredit（代表花呗单通道）,若由于用户原因渠道不可用，用户可选择是否用其他渠道支付。 注：该参数不可与花呗分期参数同时传
 
 	//支付并签约特有参数。
 	AgreementSignParams *AgreementSignParams `json:"agreement_sign_params"` // 签约相关 如果希望在sdk中支付并签约，需要在这里传入签约信息。支付并签约额外添加 agreement_sign_params
@@ -571,11 +572,11 @@ type SignMerchantParams struct {
 }
 
 type AgreementSignParams struct {
-	PersonalProductCode string            `json:"personal_product_code"` // 个人签约产品码，商户和支付宝签约时确定。 必传
-	SignScene           string            `json:"sign_scene"`            // 协议签约场景，商户和支付宝签约时确定，商户可咨询技术支持。 必传
-	ExternalAgreementNo string            `json:"external_agreement_no"` // 萌推系统内部的 contract_id
-	AccessParams        *AccessParams     `json:"access_params"`         // 请按当前接入的方式进行填充，且输入值必须为文档中的参数取值范围。 必传
-	PeriodRuleParams    *PeriodRuleParams `json:"period_rule_params"`    // 周期管控规则参数period_rule_params，在签约周期扣款产品（如CYCLE_PAY_AUTH_P）时必传，在签约其他产品时无需传入。 周期扣款产品，会按照这里传入的参数提示用户，并对发起扣款的时间、金额、次数等做相应限制。
+	PersonalProductCode string              `json:"personal_product_code"` // 个人签约产品码，商户和支付宝签约时确定。 必传
+	SignScene           string              `json:"sign_scene"`            // 协议签约场景，商户和支付宝签约时确定，商户可咨询技术支持。 必传
+	ExternalAgreementNo string              `json:"external_agreement_no"` // 萌推系统内部的 contract_id
+	AccessParams        *AccessParams       `json:"access_params"`         // 请按当前接入的方式进行填充，且输入值必须为文档中的参数取值范围。 必传
+	PeriodRuleParams    *PeriodRuleParams   `json:"period_rule_params"`    // 周期管控规则参数period_rule_params，在签约周期扣款产品（如CYCLE_PAY_AUTH_P）时必传，在签约其他产品时无需传入。 周期扣款产品，会按照这里传入的参数提示用户，并对发起扣款的时间、金额、次数等做相应限制。
 	SubMerchant         *SignMerchantParams `json:"sub_merchant"`          // 此参数用于传递子商户信息，无特殊需求时不用关注。目前商户代扣、海外代扣、淘旅行信用住产品支持传入该参数（在销售方案中“是否允许自定义子商户信息”需要选是）
 }
 
