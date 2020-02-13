@@ -546,7 +546,7 @@ type AliPayTradeAppPay struct {
 	//EnablePayChannels  string `json:"enable_pay_channels"`  // 可选 	可用渠道，用户只能在指定渠道范围内支付  当有多个渠道时用“,”分隔 注：与disable_pay_channels互斥
 	//DisablePayChannels string `json:"disable_pay_channels"` // 可选 禁用渠道，用户不可用指定渠道支付  当有多个渠道时用“,”分隔 注：与enable_pay_channels互斥
 	//StoreId            string `json:"store_id"`             // 可选 商户门店编号
-	SpecifiedChannel string `json:"specified_channel"` // 指定渠道，目前仅支持传入pcredit（代表花呗单通道）,若由于用户原因渠道不可用，用户可选择是否用其他渠道支付。 注：该参数不可与花呗分期参数同时传
+	SpecifiedChannel string `json:"specified_channel,omitempty"` // 指定渠道，目前仅支持传入pcredit（代表花呗单通道）,若由于用户原因渠道不可用，用户可选择是否用其他渠道支付。 注：该参数不可与花呗分期参数同时传
 
 	//支付并签约特有参数。
 	AgreementSignParams *AgreementSignParams `json:"agreement_sign_params"` // 签约相关 如果希望在sdk中支付并签约，需要在这里传入签约信息。支付并签约额外添加 agreement_sign_params
