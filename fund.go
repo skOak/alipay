@@ -13,3 +13,10 @@ func (this *AliPay) FundTransOrderQuery(param AliPayFundTransOrderQuery) (result
 	err = this.doRequest("POST", param, &results)
 	return results, err
 }
+
+// FundTransUniTransfer https://opendocs.alipay.com/apis/api_28/alipay.fund.trans.uni.transfer/
+// 单笔转账到支付宝账户接口
+func (this *AliPay) FundTransUniTransfer(param FundTransUniTransfer) (results *FundTransUniTransferResponse, err error) {
+	err = this.doRequest("POST", param, &results)
+	return results, err
+}
