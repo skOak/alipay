@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -98,6 +99,7 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 	var buf io.Reader
 	if param != nil {
 		p, err := this.URLValues(param)
+		fmt.Println("sing",p.Encode())
 		if err != nil {
 			return err
 		}
@@ -122,6 +124,8 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 	if err != nil {
 		return err
 	}
+
+	fmt.Println("rps data",string(data))
 
 	if len(this.AliPayPublicKey) > 0 {
 		var dataStr = string(data)
