@@ -36,7 +36,7 @@ func New(appId, partnerId string, publicKey, privateKey []byte, isProduction, is
 	client.client = http.DefaultClient
 	if isMApi {
 		client.apiDomain = K_MAPI_PRODUCTION_API_URL
-		client.SignType = K_SIGN_TYPE_RSA2
+		client.SignType = K_SIGN_TYPE_RSA
 	} else {
 		if isProduction {
 			client.apiDomain = K_ALI_PAY_PRODUCTION_API_URL
