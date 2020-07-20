@@ -123,6 +123,7 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 		return err
 	}
 
+
 	if len(this.AliPayPublicKey) > 0 {
 		var dataStr = string(data)
 

@@ -60,7 +60,7 @@ vTlWbWwZHVDP85dioLE9mfo5+Hh3SmHDi3TaVXjxeJsUgHkRgOX7
 `)
 )
 
-var client *AliPay
+//var client *AliPay
 
 func TestAliPay_CustomsDeclare(t *testing.T) {
 	client = New(this_appID, this_partnerID, this_publicKey, this_privateKey, false, true)
