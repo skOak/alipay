@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -37,7 +36,7 @@ func New(appId, partnerId string, publicKey, privateKey []byte, isProduction, is
 	client.client = http.DefaultClient
 	if isMApi {
 		client.apiDomain = K_MAPI_PRODUCTION_API_URL
-		client.SignType = K_SIGN_TYPE_RSA
+		client.SignType = K_SIGN_TYPE_RSA2
 	} else {
 		if isProduction {
 			client.apiDomain = K_ALI_PAY_PRODUCTION_API_URL
@@ -99,7 +98,6 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 	var buf io.Reader
 	if param != nil {
 		p, err := this.URLValues(param)
-		fmt.Println("sing",p.Encode())
 		if err != nil {
 			return err
 		}
@@ -125,7 +123,6 @@ func (this *AliPay) doRequest(method string, param AliPayParam, results interfac
 		return err
 	}
 
-	fmt.Println("rps data",string(data))
 
 	if len(this.AliPayPublicKey) > 0 {
 		var dataStr = string(data)

@@ -10,7 +10,8 @@ const (
 
 	K_ALI_PAY_SANDBOX_API_URL    = "https://openapi.alipaydev.com/gateway.do"
 	K_ALI_PAY_PRODUCTION_API_URL = "https://openapi.alipay.com/gateway.do"
-	K_MAPI_PRODUCTION_API_URL    = "https://mapi.alipay.com/gateway.do"
+	//K_MAPI_PRODUCTION_API_URL    = "https://mapi.alipay.com/gateway.do"
+	K_MAPI_PRODUCTION_API_URL    = "https://openapipre.alipay.com/gateway.do"
 
 	K_FORMAT  = "JSON"
 	K_CHARSET = "utf-8"
